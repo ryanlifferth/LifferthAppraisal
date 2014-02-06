@@ -1,0 +1,13 @@
+﻿@model System.Xml.Linq.XElement
+
+@{
+    ViewBag.Title = "Staff";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="staffPage">
+    <div class="staffPicture" id="@ViewData["ImgId"]"></div>
+    <div class="name">@ViewData["Name"] <span class="certifications">@ViewData["Certifications"]</span></div>
+    @{HtmlString htmlDescription = new HtmlString(ViewData["Description"].ToString());}
+    <p>@htmlDescription</p>
+</div>

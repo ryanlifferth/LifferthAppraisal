@@ -1,0 +1,13 @@
+﻿@using AppraiseUtah.Client.ViewModels;
+@using AppraiseUtah.Client.Utilities;
+@model AppraisalViewModel
+@{
+    ViewBag.Title = "Test";
+
+    var confirmationHtml = MailUtility.BuildConfirmationBody(Model, true);
+}
+
+
+<h2>Test</h2>
+
+@Html.Raw(confirmationHtml)

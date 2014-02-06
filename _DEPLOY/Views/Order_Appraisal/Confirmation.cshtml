@@ -1,0 +1,289 @@
+﻿@using AppraiseUtah.Client.ViewModels;
+@using AppraiseUtah.Client.Utilities;
+@model AppraisalViewModel
+@{
+    ViewBag.Title = "Confirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var appraiser = GetAppraiserForDisplay.GetAppraiser(Model.Appraisal.AppraiserId);       // gets the AppraiserModel for the selected appraiser
+    var professionalDesignations = (!string.IsNullOrEmpty(appraiser.ProfessionalDesignations)) ? " " + appraiser.ProfessionalDesignations : "";
+    var propertyType = DropDownData.GetPropertyTypeList().Where(x => x.PropertyTypeCode == Model.Appraisal.PropertyTypeCode).FirstOrDefault();
+    var appraisalPurpose = DropDownData.GetAppraisalPurposeList().Where(x => x.AppraisalPurposeCode == Model.Appraisal.AppraisalPurposeCode).FirstOrDefault();
+
+    // Check to see if Occupant data is present
+    bool occupantData = false;
+    var occupant = Model.Appraisal.OccupantPerson;
+    if (occupant != null)
+    {
+        if (!string.IsNullOrEmpty(occupant.FirstName) ||
+            !string.IsNullOrEmpty(occupant.LastName) ||
+            !string.IsNullOrEmpty(occupant.Phone) ||
+            !string.IsNullOrEmpty(occupant.Email))
+        {
+            occupantData = true;
+        }
+    }
+}
+
+
+<h2 class="green-header">Thank you for your order</h2>
+<h4 class="green-header">Your appraisal order number is:  <strong>@Model.Appraisal.Id</strong></h4>
+@{ if (!string.IsNullOrEmpty(Model.Appraisal.ClientPerson.Email))
+ {
+    <div class="note">You will receive an e-mail confirmation shortly at <em>@Model.Appraisal.ClientPerson.Email</em>.</div>
+ }}
+
+<fieldset id="ConfirmationInfo">
+    <legend>Appraisal Order Information</legend>
+
+    <div class="confirmation-section">
+        <div class="section-label col-xs-2">Appraiser</div>
+        <div id="appraiserDisplay" class="section-data col-xs-10">
+            <h4 class="appraiser-name">@appraiser.CompanyName<span class="designation">@professionalDesignations</span></h4>
+            <div class="appraiser-data">
+                <address class="pull-left">
+                    @appraiser.Address.Address1 <br />
+                    @if (!string.IsNullOrEmpty(appraiser.Address.Address2))
+                    {
+                        @appraiser.Address.Address2 <br />
+                    }
+                    @appraiser.Address.City, @appraiser.Address.StateCode  @appraiser.Address.PostalCode
+                </address>
+                <div class="contact pull-left">
+                    @Html.Raw(buildContactItems(appraiser))
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="confirmation-section">
+        <div class="section-label col-xs-2">Your Info</div>
+        <div class="section-data col-xs-10">
+            @{  var you = Model.Appraisal.ClientPerson;
+              var youAddress = Model.Appraisal.ClientAddress;
+
+              if (!string.IsNullOrEmpty(you.CompanyName))
+              {
+                <div class="name">@you.CompanyName</div>
+              }
+            <div class="name">@you.FirstName @you.LastName</div>
+                <address class="pull-left">
+                    @youAddress.Address1 <br />
+                    @if (!string.IsNullOrEmpty(youAddress.Address2))
+                    {
+                        @youAddress.Address2 <br />
+                    }
+                    @youAddress.City, @youAddress.StateCode  @youAddress.PostalCode
+                </address>
+                <div class="section-data-col-2">
+                    <abbr title="phone">P:</abbr> @you.Phone<br />
+                    <a href="mailto:@you.Email" class="email">@you.Email</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="confirmation-section">
+        <div class="section-label col-xs-2">Property Info</div>
+        <div class="section-data col-xs-10">
+            @{  var propertyAddress = Model.Appraisal.PropertyAddress;
+              var property = Model.Appraisal;
+              bool legalSalesData = ((property.SalesContractPrice != null) || (!string.IsNullOrEmpty(property.LegalDescription))) ? true : false;
+
+            <address class="pull-left">
+                @propertyType.PropertyTypeDescription<br />
+                @propertyAddress.Address1<br />
+                @if (!string.IsNullOrEmpty(propertyAddress.Address2))
+                {
+                    @propertyAddress.Address2 <br />
+                }
+                @propertyAddress.City, @propertyAddress.StateCode  @propertyAddress.PostalCode
+            </address>
+
+                <div class="section-data-col-2">
+                    @{  var dataPresent = false;
+                      if (occupantData)
+                      {
+                        <div class="occupant-label">
+                            <span>Occupant:</span>
+                        </div>
+                        <div class="occupant-data">
+                            @{ if (!string.IsNullOrEmpty(occupant.FirstName) || !string.IsNullOrEmpty(occupant.LastName))
+                             {
+                                <span class="occupant">@occupant.FirstName @occupant.LastName</span>
+                                 dataPresent = true;
+                             }
+                             if (!string.IsNullOrEmpty(occupant.Phone))
+                             {
+                                 if (dataPresent)
+                                 {
+                                    <br />
+                                 }
+                                <abbr title="phone">P:</abbr> @occupant.Phone
+                                 dataPresent = true;
+                             }
+
+                             if (!string.IsNullOrEmpty(occupant.Email))
+                             {
+                                 if (dataPresent)
+                                 {
+                                    <br />
+                                 }
+                                <a href="mailto:@occupant.Email" class="email">@occupant.Email</a>
+                             }
+                            }
+                        </div>
+                      }
+                    }
+                </div>
+
+                <div class="clearfix"></div>
+
+                if (Model.Appraisal.ContactForAccess)
+                {
+                    <div class="contact-for-access">Contact owner/occupant for access?  <strong>Yes</strong></div>
+                }
+
+                if (legalSalesData)
+                {
+                    <div class="sales-info">
+                        @{ if (property.SalesContractPrice != null)
+                         {
+                            <div class="price">
+                                @string.Format("{0:C0}", property.SalesContractPrice)
+                                <span class="trailing-label">- sales/contract price</span>
+                            </div>
+                         }}
+
+                        @{ if (!string.IsNullOrEmpty(property.LegalDescription))
+                         {
+                            <div class="legal-description">
+                                <strong>Legal description:</strong>
+                                @property.LegalDescription
+                            </div>
+                         }}
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="confirmation-section bottom">
+        <div class="section-label col-xs-2">Appraisal Report</div>
+        <div class="section-data col-xs-10">
+            @{ if (Model.Appraisal.Client2Person != null)
+             {
+                 var orderClient = Model.Appraisal.Client2Person;
+                 var orderClientAddress = Model.Appraisal.Client2Address;
+
+                <div class="occupant-label">
+                    <span class="sub-label">Appraisal Client:</span>
+                </div>
+                <div id="orderClient">
+                    <div>@orderClient.FirstName @orderClient.LastName</div>
+                    <address class="pull-left">
+                        @orderClientAddress.Address1 <br />
+                        @if (!string.IsNullOrEmpty(orderClientAddress.Address2))
+                        {
+                            @orderClientAddress.Address2 <br />
+                        }
+                        @orderClientAddress.City, @orderClientAddress.StateCode  @orderClientAddress.PostalCode
+                    </address>
+                    <div class="section-data-col-2">
+                        <abbr title="phone">P:</abbr> @orderClient.Phone<br />
+                        @if (!string.IsNullOrEmpty(orderClient.Email))
+                        {
+                            <a href="mailto:@orderClient.Email" class="email">@orderClient.Email</a>
+                        }
+                    </div>
+                </div>
+             }
+            }
+
+            @{ if (!String.IsNullOrEmpty(Model.Appraisal.ReportUsers))
+             {
+                <div>
+                    <strong>Intended report users:</strong>
+                    @Model.Appraisal.ReportUsers
+                </div>
+             }
+            }
+
+            @{ if (!String.IsNullOrEmpty(Model.Appraisal.DeliverReportTo))
+             {
+                <div>
+                    <strong>Report should be delivered to:</strong>
+                    @Model.Appraisal.DeliverReportTo
+                </div>
+             }
+            }
+
+            @{ if (appraisalPurpose != null)
+             {
+                <div>
+                    <strong>Appraisal purpose:</strong>
+                    @appraisalPurpose.AppraisalPurposeDescription
+                </div>
+             }
+
+            }
+            @{ if (!string.IsNullOrEmpty(property.Comments))
+             {
+                <div>
+                    <strong>Additional comments:</strong>
+                    @property.Comments
+                </div>
+             }
+            }
+            @{ if (string.IsNullOrEmpty(property.Comments) && string.IsNullOrEmpty(property.AppraisalPurposeCode))
+             {
+                <span>--</span>
+             }
+            }
+        </div>
+    </div>
+
+
+
+</fieldset>
+
+
+
+<div id="ConfirmationFooter">Print this page for your records</div>
+
+
+
+@section htmlhead {
+
+    <link href="@Url.Content("~/Content/css/OrderAppraisal.css")" rel="stylesheet" type="text/css" />
+
+}
+
+@functions {
+    private string buildContactItems(AppraiseUtah.Client.Models.Appraiser appraiser)
+    {
+        var contact = "";
+
+        contact = (!string.IsNullOrEmpty(appraiser.Phone)) ? @"<abbr title=""Phone"">P:</abbr>" + appraiser.Phone : "";
+
+        if (contact != "")
+        {
+            contact += (!string.IsNullOrEmpty(appraiser.Fax)) ? @"<br /><abbr title=""Fax"">F:</abbr>" + appraiser.Fax : "";
+        }
+        else
+        {
+            contact += (!string.IsNullOrEmpty(appraiser.Fax)) ? @"<abbr title=""Fax"">F:</abbr>" + appraiser.Fax : "";
+        }
+
+        if (contact != "")
+        {
+            contact += (!string.IsNullOrEmpty(appraiser.Email)) ? @"<br /><a href=""mailto:" + appraiser.Email + @""" class=""email"">" + appraiser.Email + "</a>" : "";
+        }
+        else
+        {
+            contact += (!string.IsNullOrEmpty(appraiser.Email)) ? @"<a href=""mailto:" + appraiser.Email + @""" class=""email"">" + appraiser.Email + "</a>" : "";
+        }
+
+        return contact;
+    }
+}

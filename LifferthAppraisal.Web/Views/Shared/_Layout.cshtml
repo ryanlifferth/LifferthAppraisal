@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/bootstrap/bootstrap.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/css/Site.css")" rel="stylesheet" type="text/css" />
+    @RenderSection("htmlhead", required: false)
+</head>
+<body>
+    <div id="header">
+        <div id="headerContent">
+            <a href="@Url.Action("Index", "Home", null)" id="logo" title="Return to the home page"></a>
+            
+            <div class="headerTextRight">Residential & Commercial Services</div>
+
+
+            <ul id="nav">
+                @BuildMenuLink("Home", "Index", "Home", new { title = "Return to the home page" })
+                @BuildMenuLink("Services & Fees", "ServicesAndFees", "Home", new { title = "View the services we provide with associated fees" })
+                @BuildMenuLink("Service Area", "ServiceArea", "Home", new { title = "See the areas we cover" })
+                @BuildMenuLink("Order an Appraisal", "Index", "Order_Appraisal", new { title = "Order an appraisal from Lifferth Appraisal" })
+                @BuildMenuLink("About Us", "AboutUs", "Home", new { @class = "last", title = "Learn more about us" })
+            </ul>
+
+        </div>
+    </div>
+    <div id="addressBar">
+        <div id="headerContactInfo">
+            325 E Gordon Avenue, Layton, Utah 84041;
+            801.547.9700;
+            <a href="mailto:info@appraiseutah.com">info@appraiseutah.com</a>
+        </div>
+    </div>
+
+    <div id="main">
+        @RenderBody()
+    </div>
+    <div id="footer">
+        &copy; @DateTime.Now.ToString("yyyy") Lifferth Appraisal
+    </div>
+
+    <script src="@Url.Content("~/Scripts/Lib/jquery-2.0.3.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/Lib/bootstrap.min.js")"></script>
+    @RenderSection("PageScripts", false)
+</body>
+</html>
+
+
+
+
+@helper BuildMenuLink(String linkText, String actionLink, String controllerName, object htmlAttr)
+{
+    var currentController = ViewContext.RouteData.Values["controller"].ToString();
+    var currentAction = ViewContext.RouteData.Values["action"].ToString();
+    var attr = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttr);
+
+    if (((currentController == "Home") && (currentAction == "Index")) && ((actionLink == "Index") && (controllerName == "Home")))
+    {
+        // Don't build the link in the menu bar for the home page if we are on the home page
+    }
+    else
+    {
+        if (String.Equals(currentAction, actionLink, StringComparison.CurrentCultureIgnoreCase) && String.Equals(currentController, controllerName, StringComparison.CurrentCultureIgnoreCase))
+        {
+            // Check to make sure that the class attribute hasn't already been added.
+            if (attr.ContainsKey("class"))
+            {
+                attr["class"] = attr["class"] + " selected";
+            }
+            else
+            {
+                attr.Add("class", "selected");
+            }
+        }
+
+        <li>@Html.ActionLink(linkText, actionLink, controllerName, null, attr)</li>
+    }
+
+}
