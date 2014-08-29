@@ -3,39 +3,43 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h6>Services</h6>
+@*<h6>Services</h6>
 <div class="content">
     Residential and commercial appraisal services?......<br />
     Conventional, FHA, VA, divorce, tax appeal, etc....
-</div>
+</div>*@
 
-<h6>Fees</h6>
+<h6>Services & Pricing Schedule</h6>
 <div class="content">
     <table>
         <tr>
             <th>Appraisal Type</th>
+            <th>Purpose</th>
             <th>Price</th>
         </tr>
-        <tr>
-            <td>Residential Appraisal (homes < $500K)</td>
-            <td class="price">$450</td>
-        </tr>
-        <tr class="odd">
-            <td>Residential Appraisal (homes > $500K)</td>
-            <td class="price">(quote)</td>
-        </tr>
-        <tr>
-            <td>Lot Appraisal</td>
-            <td class="price">$350 - $450</td>
-        </tr>
-        <tr class="odd">
-            <td>Final Inspection</td>
-            <td class="price">$100</td>
-        </tr>
+        <tr><td>1004 Single Family</td><td>Lending</td><td class="price">$450*</td></tr>
+        <tr><td>Condos</td><td>Lending</td><td class="price">$450*</td></tr>
+        <tr><td>Drive-by Appraisals</td><td>Lending</td><td class="price">$400*</td></tr>
+        <tr><td>2-4 Family Units</td><td>Lending</td><td class="price">$700*</td></tr>
+        <tr><td>Vacant Land</td><td>Lending</td><td class="price">Custom Priced</td></tr>
+        <tr><td>Commercial Propeties</td><td>Lending</td><td class="price">Custom Priced</td></tr>
+        <tr><td>&nbsp;</td><td></td><td class="price"></td></tr>
+        <tr><td>Single Family Dwellings</td><td>Relocation</td><td class="price">$600*</td></tr>
+        <tr><td>&nbsp;</td><td></td><td class="price"></td></tr>
+        <tr><td>Single Family Dwelling</td><td>Personal Use*</td><td class="price">$450*</td></tr>
+        <tr><td>Condos</td><td>Personal Use*</td><td class="price">$450*</td></tr>
+        <tr><td>Drive-by Appraisals</td><td>Personal Use*</td><td class="price">Custom Priced</td></tr>
+        <tr><td>2-4 Family Units</td><td>Personal Use*</td><td class="price">$700*</td></tr>
+        <tr><td>Vacant Land</td><td>Personal Use*</td><td class="price">Custom Priced</td></tr>
+        <tr><td>Commercial Properties</td><td>Personal Use*</td><td class="price">Custom Priced</td></tr>
+        <tr><td>Litigation</td><td>Various*</td><td class="price">Custom Priced</td></tr>
+        <tr><td>Consultation</td><td>Various*</td><td class="price">Custom Priced per hour</td></tr>
     </table>
+    <div class="table-footnote">* Pricing assumes a typical home.  Unusual or unusually expensive homes are custom priced.</div>
+    <div class="table-footnote table-footnote-last">*Personal Use might include Estate Planning, Divorce Purposes, Conflict Resolution, Tax Appeal or other uses.</div>
 </div>
 
-<h6>Payment Options</h6>
+@*<h6>Payment Options</h6>
 <div class="content">
     [content goes here]
-</div>
+</div>*@

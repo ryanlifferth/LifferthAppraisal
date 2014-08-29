@@ -284,12 +284,13 @@ table, th, td
     border: 1px solid #dadada;
     border-collapse: collapse;
     color: #555;
+    margin: 0 0 0 50px;
 }
 tr 
 {
     background-color: #fff;
 }
-tr.odd 
+tr:nth-child(odd) 
 {
     background-color: #fafafa;
 }
@@ -311,7 +312,15 @@ th
     background-color: #efefef;
 }
 
+.table-footnote {
+    font-size: 12px;
+    font-style: italic;
+    margin-left: 60px;
+}
 
+.table-footnote-last {
+    margin-bottom: 20px;
+}
 
 
 /* Service Area */
